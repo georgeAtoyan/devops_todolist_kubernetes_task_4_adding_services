@@ -89,12 +89,12 @@ Port forwarding allows us to access a Kubernetes Service from our local machine 
 Execute this command on your local machine:
 
 ```bash
-kubectl port-forward -n todoapp service/todoapp-service 8080:80
+kubectl port-forward -n todoapp service/todoapp-service 8000:80
 ```
 
 Explanation:
 
-- `8080` – local machine port.
+- `8000` – local machine port.
 - `80` – Service port inside Kubernetes.
 - `todoapp-service` – ClusterIP Service name.
 
@@ -197,4 +197,4 @@ OK
 | Port Forward | Localhost | `http://localhost:8080/api/health` |
 | NodePort | Kubernetes Node IP | `http://<NODE-IP>:30007/api/health` |
 
-All three methods ultimately route HTTP traffic to the ToDo application Pods on container port `8080`.
+All three methods ultimately route HTTP traffic to the ToDo application Pods on container port `8000`.
