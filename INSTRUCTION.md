@@ -5,9 +5,9 @@
 Make sure the namespace and application resources are deployed.
 
 ```bash
-kubectl apply -f todoapp-pod.yml
-kubectl apply -f cluster_ip.yml
-kubectl apply -f node_port.yml
+kubectl apply -f .infrastructure/todoapp-pod.yml
+kubectl apply -f .infrastructure/cluster_ip.yml
+kubectl apply -f .infrastructure/node_port.yml
 ```
 
 Check the status of the Pods and Services:
@@ -43,36 +43,18 @@ kubectl run busybox \
 From inside the BusyBox container, execute:
 
 ```bash
-wget -qO- http://todoapp-service.todoapp.svc.cluster.local/api/health
+wget -qO- http://todoapp-service.todoapp.svc.cluster.local/
 ```
 
 You can also use the shorter DNS name because BusyBox runs in the same namespace:
 
 ```bash
-wget -qO- http://todoapp-service/api/health
+wget -qO- http://todoapp-service/
 ```
 
-Expected response:
+The request is sent to the ClusterIP Service, which forwards traffic from Service port `80` to application container port `8000`.
 
-```text
-OK
-```
-
-The request is sent to the ClusterIP Service, which forwards traffic to one of the matching application Pods on port `8080`.
-
-### Step 3. Test the readiness endpoint
-
-```bash
-wget -qO- http://todoapp-service/api/ready
-```
-
-Expected response:
-
-```text
-OK
-```
-
-Exit the BusyBox container:
+### Step 3. Exit the BusyBox container
 
 ```bash
 exit
@@ -105,25 +87,13 @@ Keep this terminal running while testing.
 Open your browser and navigate to:
 
 ```text
-http://localhost:8080/
-```
-
-You can also test the health endpoint:
-
-```text
-http://localhost:8080/api/health
+http://localhost:8000/
 ```
 
 Or use curl from another terminal:
 
 ```bash
-curl http://localhost:8080/api/health
-```
-
-Expected response:
-
-```text
-OK
+curl http://localhost:8000/
 ```
 
 ### Step 3. Stop port forwarding
@@ -173,16 +143,10 @@ For example, if your node IP is `192.168.1.100`:
 http://192.168.1.100:30007/
 ```
 
-You can also test the health endpoint:
+You can also use curl:
 
 ```bash
-curl http://<NODE-IP>:30007/api/health
-```
-
-Expected response:
-
-```text
-OK
+curl http://<NODE-IP>:30007/
 ```
 
 **Note:** The NodePort must be reachable from your machine. Make sure your network configuration and firewall allow incoming traffic on TCP port `30007`.
@@ -193,8 +157,8 @@ OK
 
 | Method | Access mechanism | Address |
 |---|---|---|
-| ClusterIP | Internal cluster DNS | `http://todoapp-service/api/health` |
-| Port Forward | Localhost | `http://localhost:8080/api/health` |
-| NodePort | Kubernetes Node IP | `http://<NODE-IP>:30007/api/health` |
+| ClusterIP | Internal cluster DNS | `http://todoapp-service/` |
+| Port Forward | Localhost | `http://localhost:8000/` |
+| NodePort | Kubernetes Node IP | `http://<NODE-IP>:30007/` |
 
 All three methods ultimately route HTTP traffic to the ToDo application Pods on container port `8000`.
